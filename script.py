@@ -18,7 +18,19 @@ class Blockchain(object):
         :param previous_hash: (Optional) <str> Hash of previous Block
         :return: <dict> New Block
         """
-        pass
+        block = {
+            'index': len(self.chain) + 1,
+            'timestamp': time(),
+            'transactions': self.current_transactions,
+            'proof': proof,
+            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+        }
+
+        # Reset the current list of transactions
+        self.current_transactions = []
+
+        self.chain.append(block)
+        return block
 
     def new_transaction(self, sender, recipient, amount):
         """
@@ -39,15 +51,26 @@ class Blockchain(object):
 
     @staticmethod
     def hash(block):
-        # Hashes a block
-        pass
+        """
+        Creates an SHA-256 hash of a block
+        :param block: <dict> Block
+        :return: <str>
+        """
+
+        # Make sure dictionary is ordered, or there will be inconsistent hashes
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
 
     @property
     def last_block(self):
         # Returns the last block in the chain
-        pass
+        return self.chain[-1]
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print('PyCharm')
+    b = Blockchain()
+    b.new_transaction("Alice", "Bob", 50)
+    b.new_transaction("Bob", "Charlie", 30)
+    last_block = b.last_block
+    print(f"Last Block: {last_block}")
+
 
