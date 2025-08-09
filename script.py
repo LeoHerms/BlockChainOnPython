@@ -6,6 +6,7 @@ from uuid import uuid4
 from urllib.parse import urlparse
 from flask import Flask, jsonify, request
 import requests
+import argparse
 
 # This class will store transactions and have some helper methods to manage the blockchain
 class Blockchain(object):
@@ -268,7 +269,11 @@ def consensus():
 
     return jsonify(response), 200
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    parser = argparse.ArgumentParser(description='Run the blockchain Flask server.')
+    parser.add_argument('--port', type=int, default=5000, help='Port to listen on')
+    args = parser.parse_args()
+    app.run(host='0.0.0.0', port=args.port)
 
 
